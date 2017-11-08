@@ -14,7 +14,7 @@ class Home extends CI_Controller {
             $valuesearchD=$this->input->post("searchD");
 
             $query  = (" SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
-            DATE_FORMAT(SEC_TO_TIME(Time_to_sec( CURTIME()) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+            SEC_TO_TIME(UNIX_TIMESTAMP(CURTIME()) - UNIX_TIMESTAMP(tundown))as total_time
             FROM tunnel_log  
             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
             LEFT JOIN router on tunnel_log.host = router.host            
@@ -36,7 +36,7 @@ class Home extends CI_Controller {
         }else{
 
             $query  = (" SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
-                        DATE_FORMAT(SEC_TO_TIME(Time_to_sec( CURTIME()) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+                        SEC_TO_TIME(UNIX_TIMESTAMP(CURTIME()) - UNIX_TIMESTAMP(tundown))as total_time
                         FROM tunnel_log  
                         LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                         LEFT JOIN router on tunnel_log.host = router.host            
@@ -57,7 +57,7 @@ class Home extends CI_Controller {
             $valuesearchUD=$this->input->post("searchUD");
             
                 $query2  = (" SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
-                DATE_FORMAT(SEC_TO_TIME(Time_to_sec( tunup) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time, flag
+                SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time, flag
                 FROM tunnel_log  
                 LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                 LEFT JOIN router on tunnel_log.host = router.host            
@@ -79,7 +79,7 @@ class Home extends CI_Controller {
         }else{
 
             $query2  = (" SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
-            DATE_FORMAT(SEC_TO_TIME(Time_to_sec(tunup) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+            SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
             FROM tunnel_log  
             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
             LEFT JOIN router on tunnel_log.host = router.host            
@@ -96,7 +96,7 @@ class Home extends CI_Controller {
                         SUM(IF(tunup='0000-00-00 00:00:00', 1, 0)) AS Down,
                         SUM(IF(tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS UpDown
                         FROM tunnel_log
-                        WHERE tundown >= CURDATE()-7
+                        WHERE tundown >=  DATE_ADD(CURDATE(), INTERVAL -6 DAY)
                         GROUP BY `MyDate` ");
 
          $rschart = $this->db->query($querychar);

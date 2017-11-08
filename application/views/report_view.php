@@ -11,8 +11,18 @@
       <div class="col-md-12">
             <div class="input-group">
 
-                <input name="valueSearch" type="text" placeholder="Search data" class="form-control input-md"
-                <?php if($valueSearch!=""){ echo "value = '".$valueSearch."'";}?> />
+                <input id="valueSearch" name="valueSearch" type="text" placeholder="Search data" class="form-control input-md" list="List"
+                <?php if($valueSearch!=""){ echo "value = '".$valueSearch."'";}?>  />
+                <datalist id="List">
+                    <?php  foreach($rsqueryHost as $r){ ?>
+                        <option value="<?php echo $r['hostname'] ?>" />
+                    <?php }?>
+                    <?php  foreach($rsqueryTunnel as $r){ ?>
+                        <option value="<?php echo $r['tunnel'] ?>" />
+                    <?php }?>
+                </datalist>
+
+
 
                 <input type="text" id="reportrange" name="reportrange" class="form-control input-md"
                 <?php if($reportrange!=""){ echo "value = '".$reportrange."'";}?> />
@@ -25,7 +35,8 @@
         
                 <span class="input-group-btn">
                     <button type="submit" name="btsearchRe" class="btn btn-bb" value="ค้นหา"><i class="fa fa-search"></i> Search</button>
-                    <button type="submit" name="btn_exportRe" class="btn btn-bb" value="Export"><i class="fa fa-external-link"></i> Export</button>
+                    <button type="submit" name="btn_exportRe" class="btn btn-bb" value="Export"><i class="fa fa-external-link"></i> Excel</button>
+                    <button type="submit" name="btn_exportCSV" class="btn btn-bb" value="Export"><i class="fa fa-external-link"></i> CSV</button>
 
                 </span>
 
@@ -40,9 +51,9 @@
       <div class="col-md-12">
         <div class="table-responsive">
         
-            <p><?php echo $nors ?></p>
+            
         
-            <table id="tbReport" class="table table-hover">
+            <table id="tbReport" class="table table-hover" style="margin-top: 20px;">
             <thead style="background-color: #0057ae;color: #fff">
                 <tr class="info">
 

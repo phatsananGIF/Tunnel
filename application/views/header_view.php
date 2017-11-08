@@ -65,6 +65,7 @@
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
                 <a class="dropdown-item" href="<?=base_url()?>report">Report data</a>
                 <a class="dropdown-item" href="<?=base_url()?>reportchart">Report chart</a>
+                <a class="dropdown-item" href="<?=base_url()?>reportsummary">Report summary</a>
               </div>
             </li>
 

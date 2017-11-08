@@ -62,34 +62,7 @@
                 </tr>
             </tfoot>
 
-               
-            <tbody>
-                
-                <?php
-                
-                   // $no=$offset+1;
-                   $no=1;
-                    foreach($rstunnel as $r){
-                ?>
-                        <tr >
-                            <td> <?php echo $no ?> </td>
-                            <td> <?php echo $r['cid'] ?> </td>
-                            <td> <?php echo $r['tunnel'] ?> </td>
-                            <td> <?php echo $r['host'] ?> </td>
-                            <td> <?php echo $r['hostname'] ?> </td>
-                            <td> <?php echo $r['match'] ?> </td>
-                            <td> 
-                                <a name="btedit" href= <?php echo $urledittunnel.$r['id'] ?> > <i class="fa fa-pencil-square-o fa-lg"></i></a>&nbsp;&nbsp;
-                                <a name="btdel" href= <?php echo $urldeltunnel.$r['id'] ?> onclick="javascript:return confirm('Do you want to delete it?');" > <i class="fa fa fa-trash-o fa-lg"></i></a>
-                            </td>
-                        </tr>
-                <?php
-                        $no++;
-                
-                    }
-                
-                ?>
-            </tbody>
+            
            
           </table>
 
@@ -107,6 +80,7 @@
 $(document).ready(function() {
 
     var table = $('#tbTunnel').DataTable( {
+        "ajax": '<?=base_url("Ajaxdata")?>',
         "pagingType": "full_numbers",
         "lengthMenu": [[10, 250, 500, -1], [10, 250, 500, "All"]],
         buttons: [ 'copy', 'excel', 'pdf', 'print', 'colvis' ],

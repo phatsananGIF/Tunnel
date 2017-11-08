@@ -58,6 +58,17 @@ class Reportchart extends CI_Controller {
 
         }
 
+        $queryHost =(" SELECT * FROM router ");
+        $rsqueryHost = $this->db->query($queryHost);
+        $rsqueryHost = $rsqueryHost->result_array();
+
+        $queryTunnel =(" SELECT * FROM tunnel_list ");
+        $rsqueryTunnel = $this->db->query($queryTunnel);
+        $rsqueryTunnel = $rsqueryTunnel->result_array();
+
+        
+        $data['rsqueryHost'] = $rsqueryHost;
+        $data['rsqueryTunnel'] = $rsqueryTunnel;
         
         $data['rschart'] = $rschart;
         $data['norschart'] = $norschart;

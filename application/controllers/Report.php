@@ -47,7 +47,8 @@ class Report extends CI_Controller {
 
 
                 $query2  = (" SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup, flag,
-                DATE_FORMAT(SEC_TO_TIME(Time_to_sec( tunup) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+                SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
+
                 FROM tunnel_log  
                 LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                 LEFT JOIN router on tunnel_log.host = router.host            
@@ -64,7 +65,8 @@ class Report extends CI_Controller {
 
                 $query = ("  SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup, flag,
                             if(tunup = '0000-00-00 00:00:00', 'Inactive', 'Inactive-Active') AS status,
-                            DATE_FORMAT(SEC_TO_TIME(Time_to_sec( tunup) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+                            SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
+
                             FROM tunnel_log
                             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                             LEFT JOIN router on tunnel_log.host = router.host            
@@ -85,6 +87,7 @@ class Report extends CI_Controller {
 
 
         if( $this->input->post("btn_exportRe")!=null){
+  
             $fname = "";
             
             $valueSearch=$this->input->post("valueSearch");
@@ -119,7 +122,8 @@ class Report extends CI_Controller {
                 $fname = "Inactive-Active";
 
                 $query2  = (" SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup, flag,
-                DATE_FORMAT(SEC_TO_TIME(Time_to_sec( tunup) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+                SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
+
                 FROM tunnel_log  
                 LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                 LEFT JOIN router on tunnel_log.host = router.host            
@@ -136,7 +140,8 @@ class Report extends CI_Controller {
 
                 $query = ("  SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup, flag,
                             if(tunup = '0000-00-00 00:00:00', 'Down', 'Up-down') AS status,
-                            DATE_FORMAT(SEC_TO_TIME(Time_to_sec( tunup) - Time_to_sec( tundown)) ,'%Hh %im %ss') as total_time
+                            SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
+
                             FROM tunnel_log
                             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                             LEFT JOIN router on tunnel_log.host = router.host            
@@ -281,9 +286,123 @@ class Report extends CI_Controller {
         }//bt-Export
 
 
+        if( $this->input->post("btn_exportCSV")!=null){
+
+            $fname = "";
+            
+            $valueSearch=$this->input->post("valueSearch");
+            $status = $this->input->post("statusRe");
+
+            $Daterange = $this->input->post('reportrange');
+            $sss = strpos($Daterange,"-");
+            $start_time = trim(substr($Daterange, 0, $sss));
+            $end_time = trim(substr($Daterange, $sss+1));
+
+            if($status == 1){//Down
+                $fname = "Inactive";
+                
+                $query  = (" SELECT cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown
+                FROM tunnel_log  
+                LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
+                LEFT JOIN router on tunnel_log.host = router.host            
+                where (cid like '%".$valueSearch."%' or tunnel_log.tunnel like '%".$valueSearch."%'
+                or tunnel_log.host like '%".$valueSearch."%' or hostname like '%".$valueSearch."%') 
+                and (tunup = '0000-00-00 00:00:00' and DATE_FORMAT(tundown,'%Y/%m/%d')>='". $start_time."'
+                and DATE_FORMAT(tundown,'%Y/%m/%d')<='". $end_time."') ");
+    
+
+                $rsdown = $this->db->query($query);
+                $rs = $rsdown->result_array();
+
+                //print_r($this->db->last_query());
+
+            }else if($status == 2){//Inactive-Active
+                $fname = "Inactive-Active";
+
+                $query2  = (" SELECT cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
+                SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
+
+                FROM tunnel_log  
+                LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
+                LEFT JOIN router on tunnel_log.host = router.host            
+                where (cid like '%".$valueSearch."%' or tunnel_log.tunnel like '%".$valueSearch."%'
+                or tunnel_log.host like '%".$valueSearch."%' or hostname like '%".$valueSearch."%') 
+                and ( DATE_FORMAT(tundown,'%Y/%m/%d')>='". $start_time."' and DATE_FORMAT(tundown,'%Y/%m/%d')<='". $end_time."'
+                and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
+    
+                $rsUpdown = $this->db->query($query2);
+                $rs = $rsUpdown->result_array();
+
+            }else if($status == 3){//All
+                $fname = "All";
+
+                $query = ("  SELECT cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
+                            SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time,
+                            if(tunup = '0000-00-00 00:00:00', 'Down', 'Up-down') AS status
+                            FROM tunnel_log
+                            LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
+                            LEFT JOIN router on tunnel_log.host = router.host            
+                            where (cid like '%".$valueSearch."%' or tunnel_log.tunnel like '%".$valueSearch."%'
+                            or tunnel_log.host like '%".$valueSearch."%' or hostname like '%".$valueSearch."%') 
+                            and ( DATE_FORMAT(tundown,'%Y/%m/%d')>='". $start_time."'
+                            and DATE_FORMAT(tundown,'%Y/%m/%d')<='". $end_time."' and flag != 'SKIP' ) 
+                       
+                        ORDER BY tundown ");
+        
+                $rsAll = $this->db->query($query);
+                $rs = $rsAll->result_array();
+
+                                
+            }
+            //$data[] = array('CID', 'Tunnel', 'Host', 'Hostname', 'Tunnel down');
+            if($fname == "Inactive"){
+                $data[] = array('CID', 'Tunnel', 'Host', 'Hostname', 'Tunnel down');
+
+            }else if($fname == "Inactive-Active"){
+                $data[] = array('CID', 'Tunnel', 'Host', 'Hostname', 'Tunnel down', 'Tunnel Up', 'Total time');
+
+            }else if($fname == "All"){
+                $data[] = array('CID', 'Tunnel', 'Host', 'Hostname', 'Tunnel down', 'Tunnel Up', 'Total time', 'Status');
+                
+            }
+
+          
+            $data=array_merge($data, $rs);
+            //print_r($data);
+
+
+            header("Content-type: application/csv");
+            header("Content-Disposition: attachment; filename=\"Tunnel(".$fname.")-".date('dmYHis').".csv\"");
+            header("Pragma: no-cache");
+            header("Expires: 0");
+
+            $handle = fopen('php://output', 'w');
+
+            foreach ($data as $data) {
+                fputcsv($handle, $data);
+            }
+                fclose($handle);
+            exit;
+
+        }//bt-csv
+
+
+
+        $queryHost =(" SELECT * FROM router ");
+        $rsqueryHost = $this->db->query($queryHost);
+        $rsqueryHost = $rsqueryHost->result_array();
+
+        $queryTunnel =(" SELECT * FROM tunnel_list ");
+        $rsqueryTunnel = $this->db->query($queryTunnel);
+        $rsqueryTunnel = $rsqueryTunnel->result_array();
+
+
         $nors = count($rs);
         $data['rs'] = $rs;
         $data['nors'] = "The total ".$nors;
+
+        $data['rsqueryHost'] = $rsqueryHost;
+        $data['rsqueryTunnel'] = $rsqueryTunnel;
 
         $data['status'] = $status;
         $data['reportrange'] = $Daterange;
