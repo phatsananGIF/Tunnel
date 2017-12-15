@@ -13,7 +13,8 @@ class Insert extends CI_Controller {
                 $filename=$_FILES["file"]["tmp_name"];
                 $file = fopen($filename, "r");
                 while (($importdata = fgetcsv($file, 10000, ",")) !== FALSE){
-                        $cid = $importdata[0];
+                        $cid = strtolower($importdata[0]);
+                        $cid = trim($cid);
                         $tunnel = $importdata[1];
                         $host = $importdata[2];
 
@@ -21,11 +22,15 @@ class Insert extends CI_Controller {
                         $rsCheck = $this->db->query($query);
                         $rstunnelcheck = $rsCheck->row_array();
 
-                        if ($rsCheck->num_rows() != 0){
+                        if ( ($rsCheck->num_rows() != 0) && ($cid == 'remove') ){
+                            //remove
+                            $queryR  = (" UPDATE tunnel_list SET cid='".$cid."', tunnel='".$tunnel."', host='".$host."', tuneldelete ='".date('Y-m-d H:i:s')."' WHERE id = '".$rstunnelcheck['id']."' ");
+                            $this->db->query($queryR);
+
+                        }elseif($rsCheck->num_rows() != 0){
                             //update
                             $queryU  = (" UPDATE tunnel_list SET cid='".$cid."', tunnel='".$tunnel."', host='".$host."', tunelupdate ='".date('Y-m-d H:i:s')."' WHERE id = '".$rstunnelcheck['id']."' ");
                             $this->db->query($queryU);
-
                         }else{
                             //insert
                             $queryA  = (" INSERT INTO tunnel_list (cid, tunnel, host, tunneladd)

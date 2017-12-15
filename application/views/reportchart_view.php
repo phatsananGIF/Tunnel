@@ -6,34 +6,34 @@
     <div class="container">
         <h3 class="my-4">Report chart</h3>
 
-    <div class="row" >
-        
-        <div class="col-md-12">
-        <div class="input-group">
+        <div class="row" >
+            
+            <div class="col-md-12">
+            <div class="input-group">
 
-            <input id="valueSearch" name="valueSearch" type="text" placeholder="Search data" class="form-control input-md" list="List"
-            <?php if($valueSearch!=""){ echo "value = '".$valueSearch."'";}?> />
-            <datalist id="List">
-                <?php  foreach($rsqueryHost as $r){ ?>
-                    <option value="<?php echo $r['hostname'] ?>" />
-                <?php }?>
-                <?php  foreach($rsqueryTunnel as $r){ ?>
-                    <option value="<?php echo $r['tunnel'] ?>" />
-                <?php }?>
-            </datalist>
+                <input id="valueSearch" name="valueSearch" type="text" placeholder="Search data" class="form-control input-md" list="List"
+                <?php if($valueSearch!=""){ echo "value = '".$valueSearch."'";}?> />
+                <datalist id="List">
+                    <?php  foreach($rsqueryHost as $r){ ?>
+                        <option value="<?php echo $r['hostname'] ?>" />
+                    <?php }?>
+                    <?php  foreach($rsqueryTunnel as $r){ ?>
+                        <option value="<?php echo $r['tunnel'] ?>" />
+                    <?php }?>
+                </datalist>
 
-            <input type="text" id="reportrange" name="reportrange" class="form-control input-md"
-            <?php if($reportrange!=""){ echo "value = '".$reportrange."'";}?> />
+                <input type="text" id="reportrange" name="reportrange" class="form-control input-md"
+                <?php if($reportrange!=""){ echo "value = '".$reportrange."'";}?> />
 
-            <span class="input-group-btn">
-                <button type="submit" name="btsearch" class="btn btn-bb" value="ค้นหา"><i class="fa fa-search"></i> Search</button>
+                <span class="input-group-btn">
+                    <button type="submit" name="btsearch" class="btn btn-bb" value="ค้นหา"><i class="fa fa-search"></i> Search</button>
 
-            </span>
+                </span>
+
+            </div>
+            </div>
 
         </div>
-    </div>
-
-    </div>
     <?php echo form_close();?>
     <!-- /.row -->
 

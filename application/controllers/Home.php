@@ -65,7 +65,7 @@ class Home extends CI_Controller {
                 or tunnel_log.host like '%".$valuesearchUD."%' or hostname like '%".$valuesearchUD."%'
                 or tundown like '%".$valuesearchUD."%' or tunup like '%".$valuesearchUD."%'
                 or total_time like '%".$valuesearchUD."%') 
-                and ( DATE_FORMAT(tundown,'%Y-%m-%d')=CURDATE() and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
+                and ( DATE_FORMAT(tundown,'%Y-%m-%d')=CURDATE() and DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
     
     
     
@@ -83,7 +83,7 @@ class Home extends CI_Controller {
             FROM tunnel_log  
             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
             LEFT JOIN router on tunnel_log.host = router.host            
-            WHERE DATE_FORMAT(tundown,'%Y-%m-%d')=CURDATE() and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ");
+            WHERE DATE_FORMAT(tundown,'%Y-%m-%d')=CURDATE() and DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ");
 
             $rsUpdown = $this->db->query($query2);
             $rsUpdownsum = $rsUpdown->num_rows();
@@ -94,7 +94,7 @@ class Home extends CI_Controller {
          //--- chart ---//
          $querychar = (" SELECT DATE_FORMAT(tundown, '%Y-%m-%d') As MyDate,
                         SUM(IF(tunup='0000-00-00 00:00:00', 1, 0)) AS Down,
-                        SUM(IF(tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS UpDown
+                        SUM(IF(DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS UpDown
                         FROM tunnel_log
                         WHERE tundown >=  DATE_ADD(CURDATE(), INTERVAL -6 DAY)
                         GROUP BY `MyDate` ");

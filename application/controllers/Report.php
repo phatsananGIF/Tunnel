@@ -55,7 +55,7 @@ class Report extends CI_Controller {
                 HAVING (cid like '%".$valueSearch."%' or tunnel_log.tunnel like '%".$valueSearch."%'
                 or tunnel_log.host like '%".$valueSearch."%' or hostname like '%".$valueSearch."%') 
                 and ( DATE_FORMAT(tundown,'%Y/%m/%d')>='". $start_time."' and DATE_FORMAT(tundown,'%Y/%m/%d')<='". $end_time."'
-                and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
+                and DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
     
                 $rsUpdown = $this->db->query($query2);
                 $rs = $rsUpdown->result_array();
@@ -64,7 +64,7 @@ class Report extends CI_Controller {
 
 
                 $query = ("  SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup, flag,
-                            if(tunup = '0000-00-00 00:00:00', 'Inactive', 'Inactive-Active') AS status,
+                            if(DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 'Inactive-Active', 'Inactive') AS status,
                             SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
 
                             FROM tunnel_log
@@ -80,6 +80,7 @@ class Report extends CI_Controller {
                 $rsAll = $this->db->query($query);
                 $rs = $rsAll->result_array();
 
+                print_r($this->db->last_query());
                                 
             }
 
@@ -130,7 +131,7 @@ class Report extends CI_Controller {
                 HAVING (cid like '%".$valueSearch."%' or tunnel_log.tunnel like '%".$valueSearch."%'
                 or tunnel_log.host like '%".$valueSearch."%' or hostname like '%".$valueSearch."%') 
                 and ( DATE_FORMAT(tundown,'%Y/%m/%d')>='". $start_time."' and DATE_FORMAT(tundown,'%Y/%m/%d')<='". $end_time."'
-                and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
+                and DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
     
                 $rsUpdown = $this->db->query($query2);
                 $rs = $rsUpdown->result_array();
@@ -139,7 +140,7 @@ class Report extends CI_Controller {
                 $fname = "All";
 
                 $query = ("  SELECT tunnel_log.id, cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup, flag,
-                            if(tunup = '0000-00-00 00:00:00', 'Down', 'Up-down') AS status,
+                            if(DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 'Inactive-Active', 'Inactive') AS status,
                             SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time
 
                             FROM tunnel_log
@@ -252,6 +253,9 @@ class Report extends CI_Controller {
                         ->setCellValue('H'.$start_row, $row['total_time']);
 
                     }else if($fname == 'All'){
+                        if($row['total_time']<0){
+                            $row['total_time'] ="-";
+                        }
                         $objPHPExcel->setActiveSheetIndex(0)  
                         ->setCellValue('A'.$start_row, $i_num)  
                         ->setCellValue('B'.$start_row, $row['cid'])  
@@ -271,7 +275,7 @@ class Report extends CI_Controller {
                 $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');  // Excel2007 (xlsx) หรือ Excel5 (xls)        
                 
                 $filename='Tunnel('.$fname.')-'.date("dmYHis").'.xlsx'; //  กำหนดชือ่ไฟล์ นามสกุล xls หรือ xlsx
-                // บังคับให้ทำการดาวน์ดหลดไฟล์
+                // บังคับให้ทำการดาวน์โหลดไฟล์
                 header('Content-Type: application/vnd.ms-excel'); //mime type
                 header('Content-Disposition: attachment;filename="'.$filename.'"'); //tell browser what's the file name
                 header('Cache-Control: max-age=0'); //no cache
@@ -328,7 +332,7 @@ class Report extends CI_Controller {
                 where (cid like '%".$valueSearch."%' or tunnel_log.tunnel like '%".$valueSearch."%'
                 or tunnel_log.host like '%".$valueSearch."%' or hostname like '%".$valueSearch."%') 
                 and ( DATE_FORMAT(tundown,'%Y/%m/%d')>='". $start_time."' and DATE_FORMAT(tundown,'%Y/%m/%d')<='". $end_time."'
-                and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
+                and DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and  tunup!='0000-00-00 00:00:00' and flag != 'SKIP' ) ");
     
                 $rsUpdown = $this->db->query($query2);
                 $rs = $rsUpdown->result_array();
@@ -337,8 +341,8 @@ class Report extends CI_Controller {
                 $fname = "All";
 
                 $query = ("  SELECT cid, tunnel_log.tunnel, tunnel_log.host, hostname, tundown, tunup,
-                            SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))as total_time,
-                            if(tunup = '0000-00-00 00:00:00', 'Down', 'Up-down') AS status
+                            if(tunup = '0000-00-00 00:00:00', '-', SEC_TO_TIME(UNIX_TIMESTAMP(tunup) - UNIX_TIMESTAMP(tundown))) as total_time,
+                            if(DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 'Inactive-Active', 'Inactive') AS status
                             FROM tunnel_log
                             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                             LEFT JOIN router on tunnel_log.host = router.host            

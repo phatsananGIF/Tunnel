@@ -57,6 +57,13 @@
             <li class="nav-item">
               <a class="nav-link" href="<?=base_url()?>home">Home</a>
             </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<?=base_url()?>activeInactive">Active-Inactive</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="<?=base_url()?>inactiveActive">Inactive-Active</a>
+            </li>
+            
 
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -71,6 +78,10 @@
 
             <li class="nav-item">
               <a class="nav-link" href="<?=base_url()?>insert">Insert</a>
+            </li>
+
+            <li class="nav-item">
+              <a class="nav-link" href="<?=base_url()?>genTemplates">Templates</a>
             </li>
 
           </ul>

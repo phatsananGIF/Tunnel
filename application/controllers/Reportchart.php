@@ -28,7 +28,7 @@ class Reportchart extends CI_Controller {
 
             $query  = ("  SELECT DATE_FORMAT(tundown, '%Y-%m-%d') As MyDate,
                             SUM(IF(tunup='0000-00-00 00:00:00', 1, 0)) AS Inactive,
-                            SUM(IF(tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS InactiveActive
+                            SUM(IF(DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS InactiveActive
                             FROM tunnel_log
                             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                             LEFT JOIN router on tunnel_log.host = router.host
@@ -38,9 +38,10 @@ class Reportchart extends CI_Controller {
             $rschart = $this->db->query($query);
             $rschart = $rschart->result_array();
 
+            //query2 นี้ไว้ดึง total
             $query2  = ("  SELECT DATE_FORMAT(tundown, '%Y-%m-%d') As MyDate,
                             SUM(IF(tunup='0000-00-00 00:00:00', 1, 0)) AS Inactive,
-                            SUM(IF(tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS InactiveActive
+                            SUM(IF(DATE_FORMAT(tunup,'%Y-%m-%d')=DATE_FORMAT(tundown,'%Y-%m-%d') and tunup!='0000-00-00 00:00:00' AND flag != 'SKIP', 1, 0)) AS InactiveActive
                             FROM tunnel_log
                             LEFT JOIN tunnel_list on ( tunnel_log.tunnel = tunnel_list.tunnel and tunnel_log.host = tunnel_list.host)
                             LEFT JOIN router on tunnel_log.host = router.host

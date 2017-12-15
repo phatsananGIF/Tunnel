@@ -14,7 +14,7 @@
             <form action="<?php echo base_url(); ?>index.php/insert" method="post" name="upload_excel" enctype="multipart/form-data">
                 
                 <input type="file" name="file" id="file" >
-                <button type="submit" name="btadd" class="btn btn-primary" style="padding: 5px;margin: 5px;" value="Add Tunnel"><i class="fa fa-plus-circle"></i> Add Tunnel</button>
+                <button type="submit" name="btadd" class="btn btn-primary" style="padding: 5px;margin: 5px;" value="Add Tunnel"><i class="fa fa-plus-circle"></i> Update Tunnel</button>
 
  
                 <?php if($this->session->flashdata('message')=='1'){?>

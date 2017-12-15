@@ -25,8 +25,8 @@
                 <?php if($reportrange!=""){ echo "value = '".$reportrange."'";}?> />
 
                 <select class="form-control" name="statusRe" >
-                    <option value="2" <?php if($status=="2"){ echo "selected";}?> >Inactive-Active</option>
-                    <option value="1" <?php if($status=="1"){ echo "selected";}?> >Inactive</option>
+                    <option value="2" <?php if($status=="Inactive-Active"){ echo "selected";}?> >Inactive-Active</option>
+                    <option value="1" <?php if($status=="Inactive"){ echo "selected";}?> >Inactive</option>
 
                 </select>
         
@@ -59,56 +59,45 @@
             
                 <tbody class="table table-bordered">
                     <?php
-                    if(($rs=="")||(count($rs)==0)){
+                    if(($dataRS=="")||(count($dataRS)==0)){
                     ?>
                         <tr><td colspan='4' >--no data--</td></tr>
                     <?php
                     }else{
     
-                        $hostname="";
-                        $hostSum="";
                         $no=0;
-                        foreach($rs as $r){
-                            
-                            if($hostname !=  $r['hostname']){
-                                $hostname=$r['hostname'];
+                        foreach($dataRS as $dr){
+
+                            if( isset( $dr['hostname'] )){
+
                                 $no=0;
-
-                                foreach($rsH as $h){
-
-                                    if($h['hostname'] == $hostname){
-                                        $hostSum=$h['sumt'];
-                                        break;
-                                    }
-                                    
-                                }
                                 ?>
-                                <tr style="background-color: #4b4b4b;color: #ffffff">
-                                    <th colspan='4'><?php echo $hostname." (".$hostSum.")" ?></th>
-                                </tr>
-                                <tr>
-                                    <th>NO.</th>
-                                    <th>CID</th>
-                                    <th>Tunnel</th>
-                                    <th>Amount</th>
-                                </tr>
-                               
+                                    <tr style="background-color: #4b4b4b;color: #ffffff">
+                                        <th colspan='4'><?php echo $dr['hostname']; ?></th>
+                                    </tr>
+                                    <tr>
+                                        <th>NO.</th>
+                                        <th>CID</th>
+                                        <th>Tunnel</th>
+                                        <th>Amount</th>
+                                    </tr>
+                                <?php
 
-                            <?php
-                            }
-                            $no++;
-                            ?>
-                            <tr class="small">
-                                <td><?php echo $no ?></td>
-                                <td><?php echo $r['cid'] ?></td>
-                                <td><?php echo $r['tunnel'] ?></td>
-                                <td><?php echo $r['sumt'] ?></td>
-                            </tr>
-                           
-                    
-                         
-                        <?php
-                        }//foreach
+                            }else{
+                                $no++;
+                                ?>
+                                    <tr class="small">
+                                        <td><?php echo $no ?></td>
+                                        <td><?php echo $dr['cid'] ?></td>
+                                        <td><?php echo $dr['tunnel'] ?></td>
+                                        <td><?php echo $dr['sumt'] ?></td>
+                                    </tr>
+                                <?php
+                                
+                            }//if-else
+
+                        }//for
+                        
                     }//if-else
                     ?>
                 </tbody>
