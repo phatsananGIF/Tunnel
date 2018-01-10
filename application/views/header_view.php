@@ -12,7 +12,8 @@
     <title>TUNNEL</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="<?=base_url()?>asset/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">    
+    <link href="<?=base_url()?>asset/vendor/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="<?=base_url()?>asset/vendor/bootstrap/css/bootstrap-select.css" rel="stylesheet">
     <!-- Custom fonts for this template-->
     <link href="<?=base_url()?>asset/vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
     <!-- Custom styles for this template-->
@@ -29,6 +30,8 @@
       <script src="<?=base_url()?>asset/vendor/jquery/jquery.min.js"></script>
       <script src="<?=base_url()?>asset/vendor/popper/popper.min.js"></script>
       <script src="<?=base_url()?>asset/vendor/bootstrap/js/bootstrap.min.js"></script>
+      <script src="<?=base_url()?>asset/vendor/bootstrap/js/bootstrap-select.js"></script>
+
 
        <!-- datatables -->
      <script type="text/javascript" src="<?=base_url()?>asset/vendor/datatables/jquery.dataTables-1.10.16.min.js"></script>
@@ -80,8 +83,14 @@
               <a class="nav-link" href="<?=base_url()?>insert">Insert</a>
             </li>
 
-            <li class="nav-item">
-              <a class="nav-link" href="<?=base_url()?>genTemplates">Templates</a>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownBlog" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Config Tunnel
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownBlog">
+                <a class="dropdown-item" href="<?=base_url()?>templates">Templates</a>
+                <a class="dropdown-item" href="<?=base_url()?>genConfigTun">Gen config</a>
+              </div>
             </li>
 
           </ul>

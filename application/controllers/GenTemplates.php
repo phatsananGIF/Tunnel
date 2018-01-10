@@ -19,8 +19,6 @@ class GenTemplates extends CI_Controller{
         ----*/
 
         $Alltemplate = $this->model_template->getAllTemplate(); // เรียกใช้เมธอด getAllTemplate 
-     
-
         $data['Alltemplate'] = $Alltemplate;        
         
         $this->load->view('header_view');
@@ -39,12 +37,22 @@ class GenTemplates extends CI_Controller{
         redirect("genTemplates","refresh");
         exit();
 
-    }//end f.submit
+    }//end f.submitnew
+
+    public function submitUpdateTem(){
+        if($this->input->post()){
+            $datatem = $this->input->post("formtem");
+            $this->model_template->updateTextform($datatem);
+            $this->session->set_flashdata('message', '1');
+        }
+        redirect("genTemplates","refresh");
+        exit();
+    }//f.submitUpdateTem
 
     public function submitedit(){
         if($this->input->post()){
             $Dtem = $this->input->post("formtem");
-            $this->model_template->updateTemplate($Dtem);
+            //ปิดไว้เนื่องจากฟังชั่นมีการเปลี่ยนแปลงไปแล้ว $this->model_template->updateTemplate($Dtem);
             $this->session->set_flashdata('message', '1');
         }
         redirect("genTemplates","refresh");
@@ -104,6 +112,35 @@ class GenTemplates extends CI_Controller{
         }
 
     }//end f.edit
+
+
+    public function viewText(){
+        if($this->input->post()){
+            $id = $this->input->post('idtem');
+            $querygetformTem = $this->model_template->getformTemplate($id);
+            $querygetdataTem = $this->model_template->getdataTemplate($id);
+
+            $tem['namevari'] = $querygetformTem['name_tem'];
+            $tem['strvari'] = $querygetformTem['template'];
+            
+            if(count($querygetdataTem)!=0){
+                
+                $tem['status'] = "use";
+                
+            }else{
+                $tem['status'] = "notuse";
+            }
+
+           
+            echo json_encode($tem);
+        }else{
+            redirect("genTemplates");
+            exit();
+        }
+    }//end f.viewText
+
+
+
 
     public function del($id){
 

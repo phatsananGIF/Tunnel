@@ -13,14 +13,14 @@
             <div class="form-group">
                 <label class="control-label" for="phone">Tunnel</label>  
                 <input  name="addtunnel[tunnel]" value="<?php echo set_value('addtunnel[tunnel]'); ?>" type="text"
-                placeholder="tunnel" class="form-control input-md" >
+                placeholder="Tunnel1234" class="form-control input-md" >
                 <?php echo form_error('addtunnel[tunnel]'); ?>
             </div>
 
             <div class="form-group">
                 <label class="control-label" >CID</label>  
                 <input name="addtunnel[cid]" value="<?php echo set_value('addtunnel[cid]'); ?>" type="text" 
-                placeholder="CID" class="form-control input-md" >
+                placeholder="56789" class="form-control input-md" >
                 <?php echo form_error('addtunnel[cid]'); ?>
             </div>
             </div>

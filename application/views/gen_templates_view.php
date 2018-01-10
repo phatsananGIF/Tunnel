@@ -42,7 +42,6 @@
                         <th>Name template</th>
                         <th>Create template</th>
                         <th>Update fill</th>
-                        <th>Version</th>
                         <th>Command</th>
                     </tr>
                 </thead>
@@ -63,11 +62,12 @@
                                 <td> <?php echo $template['name_tem'] ?> </td>
                                 <td> <?php echo $template['create_at'] ?> </td>
                                 <td> <?php echo $template['update_at'] ?> </td>
-                                <td> <?php echo $template['version_datatem'] ?> </td>
 
                                 <td> 
                                     <a btnView="btview" id="<?=$template['tem_id']?>" href="javascript:void(0)" > <i class="fa fa-search"></i></a>&nbsp;&nbsp; 
                                     <a btnEdit="btedit" id="<?=$template['tem_id']?>" href="javascript:void(0)" > <i class="fa fa-pencil-square-o fa-lg"></i></a>&nbsp;&nbsp; 
+                                    <a btviewText="btviewText" id="<?=$template['tem_id']?>" href="javascript:void(0)" > <i class="fa fa-file-text-o"></i></a>&nbsp;&nbsp; 
+                                    <a btviewForm="btviewForm" id="<?=$template['tem_id']?>" href="javascript:void(0)" > <i class="fa fa-list-alt"></i></a>&nbsp;&nbsp; 
                                     <a name="btdel" href= "<?=base_url()?>genTemplates/del/<?=$template['tem_id']?>" onclick="javascript:return confirm('Do you want to delete it?');" > <i class="fa fa fa-trash-o fa-lg"></i></a>
                                 </td>
                             <tr>
@@ -141,11 +141,6 @@
 
                     <div class="modal-body" id="bodyViewmodal">
 
-                        <div class="form-group">
-                            <label class="control-label" >Templates</label>  
-                            <textarea rows="12" name="formtem[template]" type="text" 
-                            class="form-control input-md" readonly ><?php echo $strvari; ?></textarea>
-                        </div>
                     </div>
 
                     <div class="modal-footer">
@@ -155,6 +150,23 @@
             
             </div>
         </div><!-- Modal view-->
+
+
+<?php echo form_open('genTemplates/submitUpdateTem');?>
+    <!-- Modal viewText-->
+    <div class="modal fade" id="myModalviewText" role="dialog">
+        <div class="modal-dialog">
+        
+            <!-- Modal content-->
+            <div class="modal-content" id="ViewmodalText">
+
+            </div>
+        
+        </div>
+    </div><!-- Modal viewText-->
+<?php echo form_close();?>
+
+
 
 
 <?php echo form_open('genTemplates/submitedit');?>
@@ -364,5 +376,70 @@ $("a[btnEdit|='btedit']").click(function(){
 
 });// btn edit
 
+
+$("a[btviewText|='btviewText']").click(function(){
+    var idtem=this.id;
+    var dataI={"idtem":idtem};
+    $.ajax({
+        url : "<?php echo base_url(); ?>genTemplates/viewText",
+        type : "POST",
+        dataType : "json",
+        data : dataI,
+        success : function(data) {
+            
+            var datacreate ='<div class="modal-header">';
+                datacreate +='<button type="button" class="close" data-dismiss="modal">&times;</button>';
+                datacreate +='<h4 class="modal-title">Templates</h4>';
+                datacreate +='</div>';
+
+                datacreate +='<div class="modal-body">';
+                datacreate += '<input name="formtem[id_tem]" value="'+idtem+'" type="hidden" class="form-control input-md" >';
+
+                datacreate +='<div class="form-group">';
+                datacreate +='<label class="control-label" >Name Templates</label>';
+                datacreate +='<input name="formtem[name_tem]" value="'+data['namevari']+'" type="text" class="form-control input-md" readonly >';
+                datacreate +='</div>';
+
+                datacreate +='<div class="form-group">';
+                datacreate +='<label class="control-label" >Templates</label>';
+                if(data['status']=="notuse"){
+                    datacreate +='<textarea rows="12" name="formtem[template]" type="text" class="form-control input-md" >'+data['strvari']+'</textarea>';
+                }else if(data['status']=="use"){
+                    datacreate +='<textarea rows="12" name="formtem[template]" type="text" class="form-control input-md" readonly >'+data['strvari']+'</textarea>';
+                    datacreate +='<p style="margin: 10px;"><i class="fa fa-exclamation-triangle" style="color:#ff3707;"></i><strong> Can not edit text!</strong> From is use.</p>';
+                }
+                datacreate +='</div>';
+
+                datacreate +='</div>';
+
+                datacreate +='<div class="modal-footer">';
+                if(data['status']=="notuse"){
+                    datacreate +='<button type="submit" name="btUpdateTem" class="btn btn-primary" >Save</button>';
+                    datacreate +='<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
+                }else if(data['status']=="use"){
+                    datacreate +='<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
+                }
+                datacreate +='</div>';
+              
+            $("#ViewmodalText").html(datacreate);
+            $('#myModalviewText').modal('show');
+        }// success
+    });// ajax
+    
+});// btviewText
+
+$("a[btviewForm|='btviewForm']").click(function(){
+    var idtem=this.id;
+    var dataI={"idtem":idtem};
+    $.ajax({
+        url : "<?php echo base_url(); ?>genTemplates/viewform",
+        type : "POST",
+        dataType : "json",
+        data : dataI,
+        success : function(data) {
+
+         }// success
+    });// ajax
+});// btviewForm
 </script>
 

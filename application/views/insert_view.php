@@ -80,7 +80,7 @@
 $(document).ready(function() {
 
     var table = $('#tbTunnel').DataTable( {
-        "ajax": '<?=base_url("Ajaxdata")?>',
+        "ajax": '<?=base_url("Ajaxdatainsert")?>',
         "pagingType": "full_numbers",
         "lengthMenu": [[10, 250, 500, -1], [10, 250, 500, "All"]],
         buttons: [ 'copy', 'excel', 'pdf', 'print', 'colvis' ],

@@ -190,7 +190,10 @@ class Insert extends CI_Controller {
     public function del($id){
 
 
-        $query  = (" UPDATE tunnel_list SET tuneldelete = '".date('Y-m-d H:i:s')."' WHERE id = '".$id."' ");
+        $query  = (" UPDATE tunnel_list SET tuneldelete = now() WHERE id = '".$id."' ");
+        $this->db->query($query);
+
+        $query = (" UPDATE data_template SET delete_at = now() WHERE delete_at='0000-00-00 00:00:00' AND id_tunnel='".$id."' ");
         $this->db->query($query);
 
         //print_r($this->db->last_query());
